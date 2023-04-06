@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import {FOLLOWING, FOR_YOU} from '../constants';
 
 const HEADER_HEIGHT = 68;
 const TABS_HEIGHT = 40;
@@ -20,19 +21,32 @@ const TweetHomeHeader = ({
   headerTranslateY,
   tabsTranslateY,
 }: TweetHomeHeaderProps): JSX.Element => {
+  const [selectedTab, setSelectedTab] = useState<number>(FOR_YOU);
+
+  const handleTabPress = (tab: number) => {
+    setSelectedTab(tab);
+  };
+
   return (
     <Animated.View
       style={[styles.header, {transform: [{translateY: headerTranslateY}]}]}>
-      <Image
-        source={require('../assets/tweet.png')}
-        style={{height: 50, width: 50}}
-      />
+      <Image source={require('../assets/tweet.png')} style={styles.image} />
       <Animated.View
         style={[styles.tabs, {transform: [{translateY: tabsTranslateY}]}]}>
-        <TouchableOpacity style={styles.tabButton}>
+        <TouchableOpacity
+          style={[
+            styles.tabButton,
+            selectedTab === FOR_YOU && styles.selectedTab,
+          ]}
+          onPress={() => handleTabPress(FOR_YOU)}>
           <Text style={styles.tabButtonText}>For You</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.tabButton}>
+        <TouchableOpacity
+          style={[
+            styles.tabButton,
+            selectedTab === FOLLOWING && styles.selectedTab,
+          ]}
+          onPress={() => handleTabPress(FOLLOWING)}>
           <Text style={styles.tabButtonText}>Following</Text>
         </TouchableOpacity>
       </Animated.View>
@@ -52,9 +66,9 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 1,
   },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 20,
+  image: {
+    height: 50,
+    width: 50,
   },
   tabs: {
     height: TABS_HEIGHT,
@@ -72,6 +86,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 20,
+  },
+  selectedTab: {
     borderBottomColor: '#1A9AF0',
     borderBottomWidth: 3,
   },
