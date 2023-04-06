@@ -16,10 +16,6 @@ const TweetBody: React.FC<TweetBodyProps> = ({tweet}) => {
     // TODO: Handle like press
   };
 
-  const handleRetweetPress = () => {
-    // TODO: Handle retweet press
-  };
-
   const profileName = `${tweet.user.first_name} ${tweet.user.last_name}`;
   const userName = `@${tweet.user.first_name}${tweet.user.first_name}`;
   const tweetText = tweet.text;
@@ -55,9 +51,7 @@ const TweetBody: React.FC<TweetBodyProps> = ({tweet}) => {
               />
               <Text style={styles.count}>{likes}</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={handleRetweetPress}>
+            <TouchableOpacity style={styles.actionButton}>
               <Feather
                 name="message-circle"
                 size={22}
