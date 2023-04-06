@@ -2,7 +2,7 @@ import React from 'react';
 import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
 import {Tweet} from '../store/api/tweetApi';
 import Separator from './Separator';
-import {pastDateFormat, randomNumber} from '../utils';
+import {pastDateFormat} from '../utils';
 import {useToggleTweetLikeMutation} from '../store/api/tweetApi';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
