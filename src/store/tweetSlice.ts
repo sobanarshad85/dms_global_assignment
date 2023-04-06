@@ -23,10 +23,24 @@ export const tweetSlice = createSlice({
       state.totalPages = action.payload.totalPages;
       state.currentPage = state.currentPage < state.totalPages ? state.currentPage + 1 : 10
     },
+    toggleLike: (state, action: PayloadAction<string>) => {
+      const { tweetList } = state;
+      const index = tweetList.findIndex(tweet => tweet.id === action.payload);
+      if (index !== -1) {
+        const newTweets = [...tweetList];
+        const tweet = newTweets[index];
+        newTweets[index] = {
+          ...tweet,
+          like_by_me: !tweet.like_by_me,
+          likes_count: tweet.like_by_me ? tweet.likes_count - 1 : tweet.likes_count + 1,
+        };
+        state.tweetList = newTweets;
+      }
+    },
   },
 });
 
-export const { addTweetsInStore } = tweetSlice.actions;
+export const { addTweetsInStore, toggleLike } = tweetSlice.actions;
 
 export const getTweetList = (state: RootState) =>
   state.tweets.tweetList;

@@ -3,25 +3,43 @@ import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
 import {Tweet} from '../store/api/tweetApi';
 import Separator from './Separator';
 import {pastDateFormat, randomNumber} from '../utils';
+import {useToggleTweetLikeMutation} from '../store/api/tweetApi';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import {useDispatch} from 'react-redux';
+import {toggleLike} from '../store/tweetSlice';
 
 interface TweetBodyProps {
   tweet: Tweet;
 }
 
 const TweetBody: React.FC<TweetBodyProps> = ({tweet}) => {
+  const dispatch = useDispatch();
+
+  const [toggleTweetLike, {isLoading, data}] = useToggleTweetLikeMutation();
+
+  // Like or unlike a tweet depending on whether the user has liked it or not.
   const handleLikePress = () => {
-    // TODO: Handle like press
+    const formData = new FormData();
+    formData.append('post_id', tweet.id);
+    const payload = {data: formData, isLiked: tweet.like_by_me};
+    toggleTweetLike(payload)
+      .unwrap()
+      .then(response => {
+        console.log(`${!tweet?.like_by_me} posted successfully:`, response);
+        dispatch(toggleLike(tweet.id));
+      })
+      .catch(error => {
+        console.error(`Error ${!tweet?.like_by_me} tweet:`, error.message);
+      });
   };
 
-  const profileName = `${tweet.user.first_name} ${tweet.user.last_name}`;
-  const userName = `@${tweet.user.first_name}${tweet.user.first_name}`;
-  const tweetText = tweet.text;
-  const createdAt = tweet.created_at;
-  const replies = tweet.replies_count;
-  const likes = tweet.likes_count;
+  const {text, created_at, replies_count, likes_count, like_by_me, user} =
+    tweet;
+
+  const profileName = `${user?.first_name} ${user?.last_name}`;
+  const userName = `@${user?.first_name}${user?.first_name}`;
 
   return (
     <View>
@@ -35,21 +53,21 @@ const TweetBody: React.FC<TweetBodyProps> = ({tweet}) => {
             <Text style={styles.name}>{profileName}</Text>
             <Text style={styles.username}>{userName}</Text>
             <Text style={styles.dot}>·</Text>
-            <Text style={styles.timestamp}>{pastDateFormat(createdAt)}</Text>
+            <Text style={styles.timestamp}>{pastDateFormat(created_at)}</Text>
           </View>
-          <Text style={styles.body}>{tweetText}</Text>
+          <Text style={styles.body}>{text}</Text>
           <View style={styles.actionContainer}>
             <TouchableOpacity
+              disabled={isLoading}
               style={styles.actionButton}
               onPress={handleLikePress}>
               <Ionicons
-                name="heart-outline"
-                // name="heart-sharp"
-                // color='red'
+                name={like_by_me ? 'heart-sharp' : 'heart-outline'}
+                color={like_by_me ? 'red' : 'black'}
                 size={22}
                 style={styles.actionButton}
               />
-              <Text style={styles.count}>{likes}</Text>
+              <Text style={styles.count}>{likes_count}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionButton}>
               <Feather
@@ -57,11 +75,11 @@ const TweetBody: React.FC<TweetBodyProps> = ({tweet}) => {
                 size={22}
                 style={styles.actionButton}
               />
-              <Text style={styles.count}>{replies}</Text>
+              <Text style={styles.count}>{replies_count}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionButton}>
               <EvilIcons name="retweet" size={30} style={styles.actionButton} />
-              <Text style={styles.count}>{randomNumber()}</Text>
+              <Text style={styles.count}>23</Text>
             </TouchableOpacity>
           </View>
         </View>

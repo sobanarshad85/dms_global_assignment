@@ -7,7 +7,8 @@ export interface Tweet {
   text: string;
   user: User;
   likes_count: number;
-  replies_count: number
+  replies_count: number;
+  like_by_me: boolean;
 }
 
 export interface User {
@@ -36,8 +37,15 @@ export const tweetApi = createApi({
       getTweetList: builder.query<any, number>({
         query: (currentPage = 1) => `timeline?page=${currentPage}`,
       }),
+      toggleTweetLike: builder.mutation<Tweet, { data: FormData, isLiked: boolean }>({
+        query: (payload) => ({
+          url: payload?.isLiked ? '/unlike' : '/like',
+          method: 'POST',
+          body: payload?.data,
+        }),
+      }),
     };
   },
 });
 
-export const { useLazyGetTweetListQuery } = tweetApi;
+export const { useLazyGetTweetListQuery, useToggleTweetLikeMutation } = tweetApi;
