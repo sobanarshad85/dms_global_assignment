@@ -5,5 +5,6 @@ const pastDateFormat = (date: string) => {
     const formattedDuration = `${duration.asWeeks().toFixed(0)}w ago`;
     return formattedDuration
 }
+const randomNumber = () => Math.floor(Math.random() * 10) + 1;
 
-export { pastDateFormat }
+export { pastDateFormat, randomNumber }

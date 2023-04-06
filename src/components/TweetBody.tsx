@@ -2,7 +2,10 @@ import React from 'react';
 import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
 import {Tweet} from '../store/api/tweetApi';
 import Separator from './Separator';
-import {pastDateFormat} from '../utils';
+import {pastDateFormat, randomNumber} from '../utils';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Feather from 'react-native-vector-icons/Feather';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 interface TweetBodyProps {
   tweet: Tweet;
@@ -21,6 +24,8 @@ const TweetBody: React.FC<TweetBodyProps> = ({tweet}) => {
   const userName = `@${tweet.user.first_name}${tweet.user.first_name}`;
   const tweetText = tweet.text;
   const createdAt = tweet.created_at;
+  const replies = tweet.replies_count;
+  const likes = tweet.likes_count;
 
   return (
     <View>
@@ -41,12 +46,28 @@ const TweetBody: React.FC<TweetBodyProps> = ({tweet}) => {
             <TouchableOpacity
               style={styles.actionButton}
               onPress={handleLikePress}>
-              <Text style={styles.actionButtonText}>Like</Text>
+              <Ionicons
+                name="heart-outline"
+                // name="heart-sharp"
+                // color='red'
+                size={22}
+                style={styles.actionButton}
+              />
+              <Text style={styles.count}>{likes}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.actionButton}
               onPress={handleRetweetPress}>
-              <Text style={styles.actionButtonText}>Retweet</Text>
+              <Feather
+                name="message-circle"
+                size={22}
+                style={styles.actionButton}
+              />
+              <Text style={styles.count}>{replies}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionButton}>
+              <EvilIcons name="retweet" size={30} style={styles.actionButton} />
+              <Text style={styles.count}>{randomNumber()}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -101,13 +122,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionButton: {
-    backgroundColor: '#1DA1F2',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 20,
+    paddingHorizontal: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  count: {
+    marginLeft: 0,
+    fontSize: 14,
   },
   actionButtonText: {
-    color: 'white',
+    color: 'black',
     fontWeight: 'bold',
   },
 });
